@@ -1,70 +1,84 @@
 from datetime import date
+import json
 
-def adicionando_gasto(lista):
+def expense(lista):
     nome = input("nome do produto: ")
-
     try:
         valor = float(input("valor: "))
-        quantidade = float(input("quantidade: "))
-    except (ValueError, UnboundLocalError):
+        quantidade = int(input("quantidade: "))
+    except ValueError:
         print("Erro: permitido apenas numeros ou use . ao invez de virgulas ex: 10.50")
         return
-    soma = valor * quantidade
-    if valor == 0:
+
+    if valor <= 0:
         print("valor negativo ou igual a 0 não é valido")
         return
+    if quantidade <= 0:
+        valor = 1
     else:
+        soma = valor * quantidade
         dicionario = {
     "nome": nome,
-    "valor":soma,
+    "total":soma,
     "data": date.today().isoformat()
     }
         lista.append(dicionario)
 
-def adicionando_lucro(lista):
+
+def profit(lista):
     try:
         quantia = float(input("quantia recebida : "))
-    except (ValueError , UnboundLocalError):
+    except ValueError:
         print("Erro: permitido apenas numeros ou use . ao invez de virgulas ex: 10.50")
         return
     dicionario = {"nome":"salario",
-                  "valor": quantia}
+                  "total": quantia}
     lista.append(dicionario)
 
-def leitura_gasto(lista):
+
+def reading(lista):
+    if len(lista) == 0:
+        print("lista vazia")
+        return
+
     for numero,leitor in enumerate(lista,start=1):
         print(f"{'-'*25}\nnumero",numero)
         for chave,valor in leitor.items():
             print(chave,valor)
     print("-"*25)
 
-def deletar_produto(lista):
-    leitura_gasto(lista)
-    try:
-        numero = int(input("digite o numero onde esta localizado o produto para deletar"))
-    except (ValueError, UnboundLocalError):
-        print("erro permitido apenas numeros inteiros")
-        return
+
+def delet(lista):
     if len(lista) == 0:
         print("lista vazia")
-    elif numero <= 0:
+        return
+    reading(lista)
+
+    try:
+        numero = int(input("digite o numero onde esta localizado o produto para deletar"))
+    except ValueError:
+        print("erro permitido apenas numeros inteiros")
+        return
+
+    if numero <= 0:
         print("Erro: numeros negativos ou igual a 0 não se enquadra em um item da lista")
     elif numero > len(lista):
         print("Error,numero do produto não encontrado")
     else:
         lista.pop(numero-1)
 
-def total(lista):
+
+def adding(lista):
     todo = 0
     for leitor in lista:
-        todo +=  leitor["valor"]
+        todo +=  leitor["total"]
     print(todo)
 
-def gasto_lucro(lista,lista1):
+def gasto_lucro(lista1,lista2):
     lucro = 0
     despesa = 0
-    for l in lista: # l = lucro
-        lucro += l["valor"]
+    for l in lista1: # l = lucro
+        lucro += l["total"]
     for d in lista1: # d = despesa
-        despesa += d["valor"]
-    return print(lucro-despesa)
+        despesa += d["total"]
+    print(lucro - despesa)
